@@ -11,9 +11,10 @@ import { CharacterInteraction } from "../components/CharacterInteraction";
 import { HOME_VIDEO_URL } from "../data/videoUrls";
 
 // Using real images instead of figma:asset
-const curatorImage = '/characters/the-curator.jpg';
 // Real mascot lineup (Leo, Milly, Ellie, Benny, The Curator) instead of the old stock photo
 const animalGroupImage = '/characters/team-poster.jpg';
+// Approved hero banner (title + mascots + scene baked in) for the top of the Home page
+const heroBannerImage = '/branding/hero-banner.png';
 
 export function Home() {
   const { childProfile } = useOnboarding();
@@ -93,14 +94,12 @@ export function Home() {
         transition={{ duration: 0.6 }}
         className="text-center space-y-6"
       >
-        <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
-          Q Rator Kids
-        </h1>
+        <img
+          src={heroBannerImage}
+          alt="Q Rator Kids — Explore, Learn, Create, Grow!"
+          className="w-full max-w-2xl mx-auto h-auto"
+        />
 
-        <p className="text-2xl md:text-3xl text-gray-800 max-w-3xl mx-auto font-bold">
-          🎨 Super fun lessons! 🖍️
-        </p>
-        
         {/* Big, Colorful Buttons */}
         <div className="flex flex-wrap gap-4 justify-center pt-4">
           <Link to="/lessons">
@@ -144,20 +143,6 @@ export function Home() {
             </motion.div>
           </Link>
         </div>
-      </motion.div>
-
-      {/* The Curator Image - Centered */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2 }}
-        className="flex justify-center"
-      >
-        <img 
-          src={curatorImage} 
-          alt="The Curator" 
-          className="w-64 md:w-80 lg:w-96 h-auto object-contain"
-        />
       </motion.div>
 
       {/* Features Grid */}
