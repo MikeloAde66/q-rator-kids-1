@@ -37,6 +37,7 @@ export function Layout() {
   // in the everyday nav.
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
+    { path: '/create-and-color', icon: Palette, label: 'Paint!' },
     { path: '/lessons', icon: BookOpen, label: 'Lessons' },
     { path: '/stories', icon: Sparkles, label: 'Stories' },
     { path: '/entertainment', icon: Film, label: 'Videos' },

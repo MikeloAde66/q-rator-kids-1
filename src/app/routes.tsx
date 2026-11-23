@@ -19,6 +19,7 @@ import { AppStoreAssets } from "./pages/AppStoreAssets";
 import { TutorialSettings } from "./pages/TutorialSettings";
 import { AccessibilitySettings } from "./pages/AccessibilitySettings";
 import { Entertainment } from "./pages/Entertainment";
+import { CreateAndColor } from "./pages/CreateAndColor";
 import { NotFound } from "./pages/NotFound";
 
 export const router = createBrowserRouter([
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
       { path: "stories", Component: Stories },
       { path: "stories/:storyId", Component: StoryDetail },
       { path: "entertainment", Component: Entertainment },
+      { path: "create-and-color", Component: CreateAndColor },
       { path: "assignments", Component: Assignments },
       { path: "subscription", Component: Subscription },
       { path: "account", Component: Account },
