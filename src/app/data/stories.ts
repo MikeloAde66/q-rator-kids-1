@@ -1,12 +1,11 @@
 // Animated stories about famous art - fun cartoon versions!
 
 // Import individual character images - using real images instead of figma:asset
-const leoImage = 'https://images.unsplash.com/photo-1669557894342-3aa8514c0fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaW9uJTIwY3ViJTIwY3V0ZSUyMHllbGxvd3xlbnwxfHx8fDE3NzIzMTM3MjF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral';
-const ellieImage = 'https://images.unsplash.com/photo-1743964451762-9fbd78f1a2c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXJ0b29uJTIwZWxlcGhhbnQlMjBjdXRlJTIwZnJpZW5kbHl8ZW58MXx8fHwxNzcyMzEzNzE1fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral';
-const curatorImage = 'https://images.unsplash.com/photo-1611627408206-ca32cf655ff9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXJ0b29uJTIwYXJ0JTIwY3VyYXRvciUyMG11c2V1bSUyMGNoYXJhY3RlcnxlbnwxfHx8fDE3NzIzMTM3MTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral';
-const millyImage = 'https://images.unsplash.com/photo-1574275364876-19d20cf571ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXJ0b29uJTIwbW9ua2V5JTIwcGxheWZ1bCUyMGhhcHB5fGVufDF8fHx8MTc3MjMxMzcxNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral';
-const bennyImage = 'https://images.unsplash.com/photo-1747184046952-8890127c598a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXJ0b29uJTIwYnVubnklMjByYWJiaXQlMjBjdXRlfGVufDF8fHx8MTc3MjMxMzcxN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral';
-
+const leoImage = '/characters/leo-lion.jpg';
+const ellieImage = '/characters/ellie-elephant.jpg';
+const curatorImage = '/characters/the-curator.jpg';
+const millyImage = '/characters/milly-monkey.jpg';
+const bennyImage = '/characters/benny-bunny.jpg';
 export interface Story {
   id: string;
   title: string;
