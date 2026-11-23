@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Sparkles, Heart, Star, Check } from 'lucide-react';
+import { ArrowRight, Sparkles, Heart, PartyPopper, Check } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
+import { RegisterModal } from '../components/RegisterModal';
 import { useOnboarding } from '../contexts/OnboardingContext';
 import { useAuth } from '../contexts/AuthContext';
 import { getAllCharacters } from '../data/characters';
@@ -19,12 +20,13 @@ export function Onboarding() {
     ageGroup: '',
     favoriteCharacter: ''
   });
-  const [parentInfo, setParentInfo] = useState({
-    email: '',
-    consent: false
-  });
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
-  const totalSteps = 5;
+  // Kids only ever see steps 0-2 (welcome, age, buddy, name). A parent
+  // account is required to actually save a profile, but the child never
+  // types a parent's email themselves — that happens in a separate modal
+  // handed off to "a grown-up", not inline in the kid's own flow.
+  const totalSteps = 4;
   const artBuddies = getAllCharacters();
 
   const nextStep = () => {
@@ -37,22 +39,32 @@ export function Onboarding() {
     setChildProfile(prev => ({ ...prev, ...updates }));
   };
 
-  const updateParentInfo = (updates: Partial<typeof parentInfo>) => {
-    setParentInfo(prev => ({ ...prev, ...updates }));
-  };
-
-  const handleComplete = () => {
-    completeOnboarding();
-    
-    // If user is authenticated, add their child profile to their account
-    if (isAuthenticated && childProfile.name && childProfile.favoriteCharacter) {
+  const saveChildProfile = () => {
+    if (childProfile.name && childProfile.favoriteCharacter) {
       addChildProfile({
         name: childProfile.name,
         ageGroup: childProfile.ageGroup as '6-8' | '9-12',
         favoriteCharacter: childProfile.favoriteCharacter
       });
     }
-    
+  };
+
+  const handleComplete = () => {
+    completeOnboarding();
+
+    if (isAuthenticated) {
+      // A grown-up is already signed in on this device — save straight away.
+      saveChildProfile();
+      navigate('/');
+    } else {
+      // Hand off to a grown-up instead of asking the child for an email.
+      setShowRegisterModal(true);
+    }
+  };
+
+  const handleRegisterSuccess = () => {
+    saveChildProfile();
+    setShowRegisterModal(false);
     navigate('/');
   };
 
@@ -301,75 +313,11 @@ export function Onboarding() {
 
                   <Button
                     size="lg"
-                    onClick={nextStep}
+                    onClick={handleComplete}
                     disabled={!childProfile.name.trim()}
                     className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white text-2xl px-12 py-8 rounded-3xl shadow-2xl border-4 border-white font-black disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    NEXT! <ArrowRight className="ml-2 w-7 h-7" />
-                  </Button>
-                </div>
-              </Card>
-            </motion.div>
-          )}
-
-          {/* Step 4: Parent Setup */}
-          {currentStep === 4 && (
-            <motion.div
-              key="parent"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              className="space-y-8"
-            >
-              <Card className="p-8 md:p-12 bg-white border-4 border-blue-200 rounded-3xl shadow-2xl max-w-2xl mx-auto">
-                <div className="text-center mb-8">
-                  <Star className="w-16 h-16 mx-auto text-blue-500 mb-4" />
-                  <h2 className="text-3xl md:text-4xl font-black text-gray-800 mb-2">
-                    For Parents 👋
-                  </h2>
-                  <p className="text-lg text-gray-600">
-                    Just a few quick details to keep things safe and fun!
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-lg font-bold text-gray-700 mb-2">
-                      Parent Email
-                    </label>
-                    <Input
-                      type="email"
-                      placeholder="parent@example.com"
-                      value={parentInfo.email}
-                      onChange={(e) => updateParentInfo({ email: e.target.value })}
-                      className="text-xl p-6 rounded-2xl border-2 border-gray-300 focus:border-blue-500"
-                    />
-                    <p className="text-sm text-gray-500 mt-2">
-                      We'll never share your email. Privacy is our priority.
-                    </p>
-                  </div>
-
-                  <div className="bg-blue-50 rounded-2xl p-6 border-2 border-blue-200">
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={parentInfo.consent}
-                        onChange={(e) => updateParentInfo({ consent: e.target.checked })}
-                        className="mt-1 w-6 h-6 rounded border-2 border-blue-400 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                      />
-                      <span className="text-base text-gray-700 leading-relaxed">
-                        I understand this app is for <strong>creative purposes only</strong>, not affiliated with any academic institutions. My child's data will <strong>never be shared</strong>. I consent to my child using Q Rator Kids.
-                      </span>
-                    </label>
-                  </div>
-
-                  <Button
-                    size="lg"
-                    onClick={handleComplete}
-                    disabled={!parentInfo.email.includes('@') || !parentInfo.consent}
-                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white text-2xl px-12 py-8 rounded-3xl shadow-2xl border-4 border-white font-black disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    START THE FUN! 🎉
+                    LET'S GO! <PartyPopper className="ml-2 w-7 h-7" />
                   </Button>
                 </div>
               </Card>
@@ -377,6 +325,16 @@ export function Onboarding() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Not shown to the child inline — this hands off to a grown-up to
+          create the actual parent account, rather than asking the kid to
+          type an email mid-flow. */}
+      <RegisterModal
+        isOpen={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        onSwitchToLogin={() => {}}
+        onSuccess={handleRegisterSuccess}
+      />
     </div>
   );
 }

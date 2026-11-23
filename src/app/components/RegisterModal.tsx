@@ -11,9 +11,10 @@ interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSwitchToLogin: () => void;
+  onSuccess?: () => void;
 }
 
-export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps) {
+export function RegisterModal({ isOpen, onClose, onSwitchToLogin, onSuccess }: RegisterModalProps) {
   const { register } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -58,6 +59,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
 
     if (result.success) {
       setSuccess(true);
+      onSuccess?.();
       setTimeout(() => {
         onClose();
         setFormData({

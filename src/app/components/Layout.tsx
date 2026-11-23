@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router";
-import { Home, BookOpen, Sparkles, Download, User, LogIn, Palette, LogOut, Users, BarChart3, Settings, Share2, Film } from "lucide-react";
-import { Button } from "./ui/button";
+import { Home, BookOpen, Sparkles, Download, Palette, Users, Film, Lock } from "lucide-react";
 import { OnboardingGuard } from "./OnboardingGuard";
 import { LoginModal } from "./LoginModal";
 import { RegisterModal } from "./RegisterModal";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
 import { ProfileSwitcherModal } from "./ProfileSwitcherModal";
 import { DownloadHistoryModal } from "./DownloadHistoryModal";
+import { GrownUpGate } from "./GrownUpGate";
+import { GrownUpMenu } from "./GrownUpMenu";
 import { DemoDataGenerator } from "./DemoDataGenerator";
 import { OfflineIndicator } from "./OfflineIndicator";
 import { GuidedTour } from "./GuidedTour";
@@ -16,23 +17,24 @@ import { ModeIndicator } from "./ModeIndicator";
 import { SkipLinks } from "./SkipLinks";
 import { KeyboardShortcutsGuide } from "./KeyboardShortcutsGuide";
 import { useAuth } from "../contexts/AuthContext";
-import { useDownload } from "../contexts/DownloadContext";
-import { useNavigate } from "react-router";
+import { getCharacterById } from "../data/characters";
 
 export function Layout() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { isAuthenticated, parentUser, activeChildProfile, logout } = useAuth();
-  const { getDownloadCount } = useDownload();
-  
+  const { isAuthenticated, parentUser, activeChildProfile } = useAuth();
+
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [showProfileSwitcher, setShowProfileSwitcher] = useState(false);
   const [showDownloadHistory, setShowDownloadHistory] = useState(false);
+  const [showGrownUpGate, setShowGrownUpGate] = useState(false);
+  const [showGrownUpMenu, setShowGrownUpMenu] = useState(false);
+  const [grownUpUnlocked, setGrownUpUnlocked] = useState(false);
 
-  const downloadCount = getDownloadCount();
-
+  // Kid-facing navigation only. Account, Dashboard, Settings, and Share
+  // live behind the Grown-Ups gate (see GrownUpMenu) so kids never see them
+  // in the everyday nav.
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
     { path: '/lessons', icon: BookOpen, label: 'Lessons' },
@@ -42,22 +44,19 @@ export function Layout() {
     { path: '/assignments', icon: Download, label: 'Assignments' },
   ];
 
-  // Add dashboard, share, and settings for parent users
-  const parentNavItems = isAuthenticated && parentUser ? [
-    ...navItems,
-    { path: '/share', icon: Share2, label: 'Share' },
-    { path: '/dashboard', icon: BarChart3, label: 'Dashboard' },
-    { path: '/settings', icon: Settings, label: 'Settings' },
-  ] : navItems;
-
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const activeCharacter = activeChildProfile ? getCharacterById(activeChildProfile.favoriteCharacter) : undefined;
+
+  const handleGrownUpClick = () => {
+    if (grownUpUnlocked) {
+      setShowGrownUpMenu(true);
+    } else {
+      setShowGrownUpGate(true);
+    }
   };
 
   return (
@@ -87,9 +86,34 @@ export function Layout() {
                 </div>
               </Link>
 
-              {/* Desktop Navigation */}
+              {/* Mobile-only: discreet grown-ups entry + active child badge */}
+              <div className="flex md:hidden items-center gap-2">
+                {isAuthenticated && activeChildProfile && (
+                  <button
+                    onClick={() => setShowProfileSwitcher(true)}
+                    className="flex items-center gap-1 px-3 py-2 bg-gradient-to-r from-yellow-300 to-orange-300 rounded-xl border-2 border-white shadow-md"
+                  >
+                    {activeCharacter ? (
+                      <span className="text-base">{activeCharacter.emoji}</span>
+                    ) : (
+                      <Users className="w-4 h-4 text-gray-800" />
+                    )}
+                    <span className="font-black text-gray-800 text-sm">{activeChildProfile.name}</span>
+                  </button>
+                )}
+                <button
+                  onClick={handleGrownUpClick}
+                  title="For Grown-Ups"
+                  aria-label="For Grown-Ups"
+                  className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
+                >
+                  <Lock className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Desktop Navigation — kid-facing only */}
               <nav id="main-navigation" className="hidden md:flex items-center gap-6" aria-label="Main navigation">
-                {parentNavItems.map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   const active = isActive(item.path);
                   return (
@@ -108,77 +132,32 @@ export function Layout() {
                     </Link>
                   );
                 })}
-                
-                {/* Auth Buttons */}
-                <div className="flex items-center gap-3 ml-4 pl-4 border-l-2 border-purple-200">
-                  {/* Download History Button */}
-                  <button
-                    onClick={() => setShowDownloadHistory(true)}
-                    className="relative p-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl shadow-md transition-all"
-                    title="Download History"
-                  >
-                    <Download className="w-5 h-5" />
-                    {downloadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-black rounded-full flex items-center justify-center border-2 border-white">
-                        {downloadCount}
-                      </span>
-                    )}
-                  </button>
 
-                  {isAuthenticated && parentUser ? (
-                    <>
-                      {/* Active Child Profile Display */}
-                      {activeChildProfile && (
-                        <button
-                          onClick={() => setShowProfileSwitcher(true)}
-                          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-300 to-orange-300 rounded-xl hover:from-yellow-400 hover:to-orange-400 transition-all border-2 border-white shadow-md"
-                        >
-                          <Users className="w-4 h-4 text-gray-800" />
-                          <span className="font-black text-gray-800">{activeChildProfile.name}</span>
-                        </button>
+                <div className="flex items-center gap-3 ml-4 pl-4 border-l-2 border-purple-200">
+                  {/* Active child — tapping just switches sibling profiles, no gate needed */}
+                  {isAuthenticated && activeChildProfile && (
+                    <button
+                      onClick={() => setShowProfileSwitcher(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-300 to-orange-300 rounded-xl hover:from-yellow-400 hover:to-orange-400 transition-all border-2 border-white shadow-md"
+                    >
+                      {activeCharacter ? (
+                        <span className="text-lg">{activeCharacter.emoji}</span>
+                      ) : (
+                        <Users className="w-4 h-4 text-gray-800" />
                       )}
-                      
-                      <Link to="/account">
-                        <Button 
-                          size="sm"
-                          className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-xl shadow-lg font-bold"
-                        >
-                          <User className="w-4 h-4" />
-                          Account
-                        </Button>
-                      </Link>
-                      
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={handleLogout}
-                        className="flex items-center gap-2 rounded-xl border-2 border-gray-300 text-gray-600 hover:bg-gray-50 font-bold"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Logout
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setShowLoginModal(true)}
-                        className="flex items-center gap-2 rounded-xl border-2 border-purple-300 text-purple-600 hover:bg-purple-50 font-bold"
-                      >
-                        <LogIn className="w-4 h-4" />
-                        Log In
-                      </Button>
-                      <Button 
-                        size="sm"
-                        onClick={() => setShowRegisterModal(true)}
-                        className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-xl shadow-lg font-bold"
-                      >
-                        <User className="w-4 h-4" />
-                        Sign Up
-                      </Button>
-                    </>
+                      <span className="font-black text-gray-800">{activeChildProfile.name}</span>
+                    </button>
                   )}
+
+                  {/* Small, discreet grown-ups-only entry point */}
+                  <button
+                    onClick={handleGrownUpClick}
+                    title="For Grown-Ups"
+                    aria-label="For Grown-Ups"
+                    className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
+                  >
+                    <Lock className="w-5 h-5" />
+                  </button>
                 </div>
               </nav>
             </div>
@@ -190,10 +169,10 @@ export function Layout() {
           <Outlet />
         </main>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation — kid-facing only */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-purple-100 shadow-lg z-50" aria-label="Mobile navigation">
           <div className="flex items-center justify-around px-2 py-3">
-            {parentNavItems.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
               return (
@@ -264,6 +243,23 @@ export function Layout() {
       <DownloadHistoryModal
         isOpen={showDownloadHistory}
         onClose={() => setShowDownloadHistory(false)}
+      />
+
+      <GrownUpGate
+        isOpen={showGrownUpGate}
+        onClose={() => setShowGrownUpGate(false)}
+        onSuccess={() => {
+          setGrownUpUnlocked(true);
+          setShowGrownUpGate(false);
+          setShowGrownUpMenu(true);
+        }}
+      />
+
+      <GrownUpMenu
+        isOpen={showGrownUpMenu}
+        onClose={() => setShowGrownUpMenu(false)}
+        onOpenLogin={() => setShowLoginModal(true)}
+        onOpenRegister={() => setShowRegisterModal(true)}
       />
 
       {/* Tutorial Components */}
