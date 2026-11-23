@@ -12,7 +12,8 @@ import { HOME_VIDEO_URL } from "../data/videoUrls";
 
 // Using real images instead of figma:asset
 const curatorImage = '/characters/the-curator.jpg';
-const animalGroupImage = 'https://images.unsplash.com/photo-1666102937747-e0cced84a519?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGFuaW1hbHMlMjBpbGx1c3RyYXRpb258ZW58MXx8fHwxNzcyMzEzNzIxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral';
+// Real mascot lineup (Leo, Milly, Ellie, Benny, The Curator) instead of the old stock photo
+const animalGroupImage = '/characters/team-poster.jpg';
 
 export function Home() {
   const { childProfile } = useOnboarding();
