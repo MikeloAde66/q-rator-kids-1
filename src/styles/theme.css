@@ -347,4 +347,12 @@
   html.qrk-dark-preview .qrk-page-bg {
     background: #fff !important;
   }
+
+  /* Real photos/illustrations (hero art, character portraits, lesson and
+     stencil thumbnails) look wrong inverted — skin tones and colors flip to
+     their negative. Counter-invert every <img> the same way as the logo and
+     canvas panel, so pictures keep their true colors against the dark page. */
+  html.qrk-dark-preview img {
+    filter: invert(1) hue-rotate(180deg);
+  }
 }
