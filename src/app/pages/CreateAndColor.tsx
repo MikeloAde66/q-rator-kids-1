@@ -4,7 +4,7 @@ import { ArrowLeft, Wand2 } from 'lucide-react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { PaintStudio } from '../components/PaintStudio';
+import { VeridianKidsStudio } from '../components/VeridianKidsStudio';
 import {
   coloringCategories,
   getSketchesByCategory,
@@ -222,7 +222,7 @@ export function CreateAndColor() {
             exit={{ opacity: 0, y: -20 }}
             className="pb-24 lg:pb-6"
           >
-            <PaintStudio
+            <VeridianKidsStudio
               sketch={sketch}
               otherSketches={
                 categoryId ? getSketchesByCategory(categoryId).filter((s) => s.id !== sketch.id) : []
