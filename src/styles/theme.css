@@ -317,4 +317,13 @@
     line-height: var(--line-height, 1.5);
     letter-spacing: var(--letter-spacing, 0);
   }
+
+  /* Dark screen preview (try-it toggle): inverts the whole page instead of
+     hand-theming every component. Bonus: the coloring pages' black-on-white
+     line art becomes white-on-black, which genuinely looks like a real
+     dark mode for that screen. */
+  html.qrk-dark-preview {
+    filter: invert(1) hue-rotate(180deg);
+    background: #fff;
+  }
 }

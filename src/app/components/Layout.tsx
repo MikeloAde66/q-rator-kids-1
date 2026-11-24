@@ -17,6 +17,7 @@ import { ModeIndicator } from "./ModeIndicator";
 import { SkipLinks } from "./SkipLinks";
 import { KeyboardShortcutsGuide } from "./KeyboardShortcutsGuide";
 import { Logo } from "./Logo";
+import { DarkModeToggle } from "./DarkModeToggle";
 import { useAuth } from "../contexts/AuthContext";
 import { getCharacterById } from "../data/characters";
 
@@ -143,6 +144,8 @@ export function Layout() {
                       <span className="font-black text-gray-800">{activeChildProfile.name}</span>
                     </button>
                   )}
+
+                  <DarkModeToggle />
 
                   {/* Small, discreet grown-ups-only entry point */}
                   <button
