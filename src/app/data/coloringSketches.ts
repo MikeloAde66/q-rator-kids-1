@@ -81,10 +81,13 @@ export const coloringSketches: ColoringSketch[] = [
     imageUrl: 'https://cdn.openart.ai/openart-ai/production/2026-11/create-image/Q5D7VNSV2eKTngAbhtiM/image_1795471815240_afb95e65_1795471815259_50faaa20.jpg',
   },
   {
+    // Self-hosted (not hotlinked) so it always loads and never hits the
+    // CORS/"tainted canvas" issue the other preset sketches can — this is
+    // the default sketch the editor opens with, so it has to just work.
     id: 'mermaid',
     categoryId: 'fantasy',
     name: 'Mermaid',
-    imageUrl: 'https://cdn.openart.ai/openart-ai/production/2026-11/create-image/Q5D7VNSV2eKTngAbhtiM/image_1795471849261_37acecf7_1795471849301_04c3d4d1.jpg',
+    imageUrl: '/sketches/mermaid.png',
   },
 ];
 
@@ -95,3 +98,9 @@ export function getSketchesByCategory(categoryId: string): ColoringSketch[] {
 export function getSketchById(id: string): ColoringSketch | undefined {
   return coloringSketches.find((s) => s.id === id);
 }
+
+export function getAllSketches(): ColoringSketch[] {
+  return coloringSketches;
+}
+
+export const DEFAULT_SKETCH: ColoringSketch = coloringSketches.find((s) => s.id === 'mermaid')!;
