@@ -16,6 +16,7 @@ import { WelcomeModal } from "./WelcomeModal";
 import { ModeIndicator } from "./ModeIndicator";
 import { SkipLinks } from "./SkipLinks";
 import { KeyboardShortcutsGuide } from "./KeyboardShortcutsGuide";
+import { Logo } from "./Logo";
 import { useAuth } from "../contexts/AuthContext";
 import { getCharacterById } from "../data/characters";
 
@@ -76,15 +77,8 @@ export function Layout() {
         <header className="bg-white shadow-md sticky top-0 z-50" role="banner">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-3" aria-label="Q Rator Kids Home">
-                <div className="bg-gradient-to-br from-pink-500 to-purple-500 p-3 rounded-2xl">
-                  <Palette className="w-8 h-8 text-white" aria-hidden="true" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-black bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-                    Q Rator Kids
-                  </h1>
-                </div>
+              <Link to="/" className="flex items-center" aria-label="Q Rator Kids Home">
+                <Logo height={48} />
               </Link>
 
               {/* Mobile-only: discreet grown-ups entry + active child badge */}
