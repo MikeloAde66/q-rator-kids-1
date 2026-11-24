@@ -19,6 +19,8 @@ import {
   Send,
   ArrowLeft,
   Settings,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { PaintEngine, type PaintEngineHandle, type PaintTool, type FillPattern, type PaintLayer } from './PaintEngine';
 import type { ColoringSketch } from '../data/coloringSketches';
@@ -48,6 +50,12 @@ const CRAYON_COLORS: { name: string; hex: string }[] = [
   { name: 'Brown', hex: '#92400e' },
   { name: 'Black', hex: '#1f2937' },
   { name: 'White', hex: '#ffffff' },
+  { name: 'Grey', hex: '#9ca3af' },
+  { name: 'Lavender', hex: '#c4b5fd' },
+  { name: 'Turquoise', hex: '#2dd4bf' },
+  { name: 'Magenta', hex: '#d946ef' },
+  { name: 'Gold', hex: '#eab308' },
+  { name: 'Mint', hex: '#6ee7b7' },
 ];
 
 const FILL_PATTERNS: { id: FillPattern; label: string }[] = [
@@ -138,6 +146,13 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
 
   const [layers, setLayers] = useState<PaintLayer[]>([]);
   const [activeLayerId, setActiveLayerId] = useState<string | null>(null);
+
+  // How big the canvas page draws, in pixels of width (the 4:5 page shape
+  // stays fixed — this just scales the whole page up or down so kids with
+  // more screen room can make it bigger).
+  const [canvasSize, setCanvasSize] = useState(640);
+  const MIN_CANVAS_SIZE = 400;
+  const MAX_CANVAS_SIZE = 1100;
 
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -360,7 +375,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
 
         {/* Center: canvas + floating reference monitor */}
         <div className="flex-1 bg-white rounded-3xl shadow-xl p-4 relative">
-          <div className="flex justify-center gap-3 mb-3">
+          <div className="flex items-center justify-center gap-3 mb-3">
             <button
               onClick={() => engineRef.current?.undo()}
               disabled={!canUndo}
@@ -377,11 +392,43 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
             >
               <Redo2 className="w-4 h-4" />
             </button>
+
+            {/* Page size: scales the 8x10 canvas bigger or smaller for
+                whatever room the kid's screen has. */}
+            <div className="flex items-center gap-2 bg-purple-50 rounded-full pl-3 pr-2 py-1 ml-2">
+              <button
+                onClick={() => setCanvasSize((s) => Math.max(MIN_CANVAS_SIZE, s - 80))}
+                disabled={canvasSize <= MIN_CANVAS_SIZE}
+                className="flex items-center justify-center w-7 h-7 rounded-full text-purple-500 disabled:opacity-30"
+                aria-label="Make page smaller"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <input
+                type="range"
+                min={MIN_CANVAS_SIZE}
+                max={MAX_CANVAS_SIZE}
+                step={20}
+                value={canvasSize}
+                onChange={(e) => setCanvasSize(Number(e.target.value))}
+                className="w-24 accent-purple-500"
+                aria-label="Page size"
+              />
+              <button
+                onClick={() => setCanvasSize((s) => Math.min(MAX_CANVAS_SIZE, s + 80))}
+                disabled={canvasSize >= MAX_CANVAS_SIZE}
+                className="flex items-center justify-center w-7 h-7 rounded-full text-purple-500 disabled:opacity-30"
+                aria-label="Make page bigger"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* 8x10 page: the canvas sits in a fixed 4:5 portrait box, like a
-              real printed coloring page, instead of stretching edge to edge. */}
-          <div className="w-full max-w-[640px] mx-auto aspect-[4/5]">
+              real printed coloring page. The kid can resize how big that
+              page draws with the zoom control above. */}
+          <div className="mx-auto aspect-[4/5]" style={{ width: '100%', maxWidth: canvasSize }}>
             <PaintEngine
               ref={engineRef}
               imageUrl={sketch.imageUrl}
