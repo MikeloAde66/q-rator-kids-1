@@ -33,6 +33,7 @@ export function Logo({ height = 56, showWordmark = true }: { height?: number; sh
       height={height}
       viewBox={`0 0 ${vbW} ${vbH}`}
       xmlns="http://www.w3.org/2000/svg"
+      className="qrk-dark-pop"
     >
       {/* Icon: rainbow ring + white tile + palette mascot */}
       <defs>

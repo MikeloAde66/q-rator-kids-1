@@ -326,4 +326,16 @@
     filter: invert(1) hue-rotate(180deg);
     background: #fff;
   }
+
+  /* Opt out of the page-wide invert for specific elements: applying the
+     exact same filter a second time cancels it out (invert∘invert = identity,
+     hue-rotate 180+180 = 360 = identity), so these keep their real colors
+     while everything around them goes dark.
+     - .qrk-dark-pop: the logo, so its candy colors stay vivid instead of
+       flipping to their opposite hues.
+     - the coloring canvas panel: stays exactly as it looks in light mode,
+       per explicit instruction not to touch it. */
+  html.qrk-dark-preview .qrk-dark-pop {
+    filter: invert(1) hue-rotate(180deg);
+  }
 }

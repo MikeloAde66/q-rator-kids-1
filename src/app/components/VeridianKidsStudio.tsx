@@ -365,7 +365,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
         </AnimatePresence>
 
         {/* Center: canvas + floating reference monitor */}
-        <div className="flex-1 bg-white rounded-3xl shadow-xl p-4 relative">
+        <div className="flex-1 bg-white rounded-3xl shadow-xl p-4 relative qrk-dark-pop">
           <div className="flex items-center justify-center gap-3 mb-3">
             <button
               onClick={() => engineRef.current?.undo()}
