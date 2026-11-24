@@ -2,7 +2,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 import { motion } from 'motion/react';
 import { Paintbrush } from 'lucide-react';
 
-export type PaintTool = 'fill' | 'draw' | 'erase';
+export type PaintTool = 'fill' | 'draw' | 'draw-crayon' | 'draw-pencil' | 'erase';
 
 export interface PaintCanvasHandle {
   undo: () => void;
@@ -183,12 +183,55 @@ export const PaintCanvas = forwardRef<PaintCanvasHandle, PaintCanvasProps>(funct
       ctx.clip();
       ctx.drawImage(original, 0, 0);
       ctx.restore();
-    } else {
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
-      ctx.fill();
+      return;
     }
+
+    if (tool === 'draw-crayon') {
+      // Waxy, textured build-up: several soft, randomly-offset dabs
+      // layered with 'multiply' so overlapping strokes deepen like wax.
+      ctx.save();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = color;
+      const dabs = 6;
+      for (let i = 0; i < dabs; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * brushSize * 0.35;
+        const ox = x + Math.cos(angle) * dist;
+        const oy = y + Math.sin(angle) * dist;
+        ctx.globalAlpha = 0.16 + Math.random() * 0.14;
+        ctx.beginPath();
+        ctx.arc(ox, oy, (brushSize / 2) * (0.6 + Math.random() * 0.5), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      return;
+    }
+
+    if (tool === 'draw-pencil') {
+      // Thin, slightly grainy hard line — smaller dabs, higher opacity,
+      // tight jitter so it reads as a sharp colored-pencil point.
+      ctx.save();
+      ctx.fillStyle = color;
+      const dabs = 4;
+      for (let i = 0; i < dabs; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * brushSize * 0.15;
+        const ox = x + Math.cos(angle) * dist;
+        const oy = y + Math.sin(angle) * dist;
+        ctx.globalAlpha = 0.55 + Math.random() * 0.3;
+        ctx.beginPath();
+        ctx.arc(ox, oy, Math.max(1, brushSize * 0.12), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      return;
+    }
+
+    // Paintbrush: solid, smooth circle.
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+    ctx.fill();
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {

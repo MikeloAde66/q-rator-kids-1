@@ -40,8 +40,8 @@ type ToolDef = {
 
 const TOOLS: ToolDef[] = [
   { id: 'draw', label: 'Paintbrush', icon: Paintbrush, bg: 'bg-purple-100 text-purple-600', live: true },
-  { id: 'draw-crayon', label: 'Crayons', icon: PenLine, bg: 'bg-orange-100 text-orange-600', live: false },
-  { id: 'draw-pencil', label: 'Colored Pencils', icon: Pencil, bg: 'bg-yellow-100 text-yellow-700', live: false },
+  { id: 'draw-crayon', label: 'Crayons', icon: PenLine, bg: 'bg-orange-100 text-orange-600', live: true },
+  { id: 'draw-pencil', label: 'Colored Pencils', icon: Pencil, bg: 'bg-yellow-100 text-yellow-700', live: true },
   { id: 'fill', label: 'Paint Bucket', icon: PaintBucket, bg: 'bg-green-100 text-green-600', live: true },
   { id: 'erase', label: 'Eraser', icon: Eraser, bg: 'bg-blue-100 text-blue-600', live: true },
   { id: 'blend', label: 'Blend', icon: Droplets, bg: 'bg-slate-100 text-slate-600', live: false },
