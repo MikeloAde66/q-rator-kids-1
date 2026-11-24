@@ -15,7 +15,7 @@ import {
   Trash2,
   Undo2,
   Redo2,
-  Save,
+  Download,
   Send,
   ArrowLeft,
   Settings,
@@ -429,11 +429,14 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
             Clear Board
           </button>
           <button
-            onClick={() => engineRef.current?.download(`${sketch.name}-my-painting.png`)}
+            onClick={() => {
+              engineRef.current?.download(`${sketch.name}-my-painting.png`);
+              flashToast('Saved to your downloads!');
+            }}
             className="flex items-center gap-2 bg-blue-100 text-blue-600 font-bold px-5 py-3 rounded-2xl"
           >
-            <Save className="w-5 h-5" />
-            Save to Gallery
+            <Download className="w-5 h-5" />
+            Save &amp; Download
           </button>
           <button
             onClick={() => flashToast('Submit to Teacher is coming soon!')}
