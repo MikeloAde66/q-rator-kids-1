@@ -73,7 +73,7 @@ export function AppStoreAssets() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-purple-50 to-pink-50 pb-20">
+    <div className="qrk-page-bg min-h-screen bg-gradient-to-b from-blue-50 via-purple-50 to-pink-50 pb-20">
       {/* Header */}
       <div className="bg-white shadow-md mb-8">
         <div className="max-w-7xl mx-auto px-4 py-8">

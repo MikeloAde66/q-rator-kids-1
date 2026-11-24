@@ -53,7 +53,7 @@ export function Home() {
   ];
 
   return (
-    <div className="space-y-12 pb-8 bg-gradient-to-b from-yellow-200 via-yellow-100 to-orange-100 -mx-6 -mt-6 px-6 pt-6 rounded-3xl min-h-screen">
+    <div className="qrk-page-bg space-y-12 pb-8 bg-gradient-to-b from-yellow-200 via-yellow-100 to-orange-100 -mx-6 -mt-6 px-6 pt-6 rounded-3xl min-h-screen">
       {/* Personalized Welcome Message */}
       {childProfile.name && favoriteCharacter && (
         <motion.div

@@ -18,7 +18,7 @@ export function ShareRewards() {
   const referralStats = getReferralStats();
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 pb-20">
+    <div className="qrk-page-bg min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 pb-20">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 md:p-8 shadow-lg">
         <div className="max-w-6xl mx-auto">

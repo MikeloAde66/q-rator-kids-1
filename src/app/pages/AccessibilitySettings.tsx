@@ -58,7 +58,7 @@ export function AccessibilitySettings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-pink-50 to-purple-50 py-8">
+    <div className="qrk-page-bg min-h-screen bg-gradient-to-b from-yellow-50 via-pink-50 to-purple-50 py-8">
       <div className="max-w-5xl mx-auto px-4">
         {/* Header */}
         <motion.div

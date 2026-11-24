@@ -32,7 +32,7 @@ export function Entertainment() {
   }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 p-4 md:p-8">
+    <div className="qrk-page-bg min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}

@@ -57,7 +57,7 @@ export function Subscription() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-200 via-yellow-100 to-orange-100 -mx-6 -mt-6 px-6 pt-6 pb-12">
+    <div className="qrk-page-bg min-h-screen bg-gradient-to-b from-yellow-200 via-yellow-100 to-orange-100 -mx-6 -mt-6 px-6 pt-6 pb-12">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

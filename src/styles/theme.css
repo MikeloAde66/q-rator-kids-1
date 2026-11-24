@@ -352,7 +352,8 @@
      stencil thumbnails) look wrong inverted — skin tones and colors flip to
      their negative. Counter-invert every <img> the same way as the logo and
      canvas panel, so pictures keep their true colors against the dark page. */
-  html.qrk-dark-preview img {
+  html.qrk-dark-preview img,
+  html.qrk-dark-preview video {
     filter: invert(1) hue-rotate(180deg);
   }
 }
