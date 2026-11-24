@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowLeft } from 'lucide-react';
+import { Sparkles, ArrowLeft, Wand2 } from 'lucide-react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 import { ColoringCanvas } from '../components/ColoringCanvas';
 import {
   coloringCategories,
@@ -17,6 +18,15 @@ export function CreateAndColor() {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [sketch, setSketch] = useState<ColoringSketch | null>(null);
 
+  // "Something else?" — live AI drawing for anything not in the preset
+  // library. This is the only part of the feature that costs money per
+  // use (calls our /api/generate-coloring-sketch function), so it's a
+  // deliberate extra step rather than the default.
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customText, setCustomText] = useState('');
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [drawError, setDrawError] = useState<string | null>(null);
+
   const pickCategory = (id: string) => {
     setCategoryId(id);
     setStep('character');
@@ -27,15 +37,52 @@ export function CreateAndColor() {
     setStep('coloring');
   };
 
+  const drawCustom = async () => {
+    const subject = customText.trim();
+    if (!subject || isDrawing) return;
+    setIsDrawing(true);
+    setDrawError(null);
+    try {
+      const res = await fetch('/api/generate-coloring-sketch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.imageUrl) {
+        throw new Error(data?.error || 'Could not draw that.');
+      }
+      setSketch({
+        id: `custom-${Date.now()}`,
+        categoryId: categoryId || 'custom',
+        name: subject,
+        imageUrl: data.imageUrl,
+      });
+      setStep('coloring');
+      setShowCustomInput(false);
+      setCustomText('');
+    } catch (err: any) {
+      setDrawError("Hmm, couldn't draw that one — try a different idea!");
+    } finally {
+      setIsDrawing(false);
+    }
+  };
+
   const startOver = () => {
     setStep('category');
     setCategoryId(null);
     setSketch(null);
+    setShowCustomInput(false);
+    setCustomText('');
+    setDrawError(null);
   };
 
   const backToCategory = () => {
     setStep('category');
     setCategoryId(null);
+    setShowCustomInput(false);
+    setCustomText('');
+    setDrawError(null);
   };
 
   const category = coloringCategories.find((c) => c.id === categoryId);
@@ -116,6 +163,51 @@ export function CreateAndColor() {
                   </Card>
                 </motion.button>
               ))}
+            </div>
+
+            <div className="flex flex-col items-center gap-3 pt-2">
+              {!showCustomInput ? (
+                <button
+                  onClick={() => setShowCustomInput(true)}
+                  className="flex items-center gap-2 text-purple-600 font-bold text-lg hover:text-purple-800"
+                >
+                  <Wand2 className="w-5 h-5" />
+                  Something else? Type it!
+                </button>
+              ) : (
+                <Card className="p-5 w-full max-w-md border-4 border-purple-200 rounded-3xl shadow-xl bg-white space-y-3">
+                  <p className="text-center font-bold text-gray-700">
+                    What do you want to draw? 🪄
+                  </p>
+                  <Input
+                    value={customText}
+                    onChange={(e) => setCustomText(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && drawCustom()}
+                    placeholder="a dolphin, a rocket, a puppy..."
+                    disabled={isDrawing}
+                    className="text-center text-lg rounded-2xl border-2 py-5"
+                  />
+                  {drawError && (
+                    <p className="text-center text-red-500 font-bold text-sm">{drawError}</p>
+                  )}
+                  <Button
+                    onClick={drawCustom}
+                    disabled={!customText.trim() || isDrawing}
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-2xl font-bold text-lg py-5 shadow-lg"
+                  >
+                    {isDrawing ? (
+                      <motion.span
+                        animate={{ opacity: [1, 0.4, 1] }}
+                        transition={{ duration: 1.2, repeat: Infinity }}
+                      >
+                        Drawing it... ✨
+                      </motion.span>
+                    ) : (
+                      'Draw it!'
+                    )}
+                  </Button>
+                </Card>
+              )}
             </div>
           </motion.div>
         )}
