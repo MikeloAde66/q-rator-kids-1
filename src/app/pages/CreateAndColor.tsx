@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowLeft, Wand2 } from 'lucide-react';
+import { ArrowLeft, Wand2 } from 'lucide-react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { ColoringCanvas } from '../components/ColoringCanvas';
+import { PaintStudio } from '../components/PaintStudio';
 import {
   coloringCategories,
   getSketchesByCategory,
@@ -89,11 +89,13 @@ export function CreateAndColor() {
 
   return (
     <div className="space-y-8 pb-8 min-h-screen">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-          Create & Color! 🖍️
-        </h1>
-      </div>
+      {step !== 'coloring' && (
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+            Create & Color! 🖍️
+          </h1>
+        </div>
+      )}
 
       <AnimatePresence mode="wait">
         {step === 'category' && (
@@ -218,27 +220,16 @@ export function CreateAndColor() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="space-y-6"
+            className="pb-24 lg:pb-6"
           >
-            <button
-              onClick={backToCategory}
-              className="flex items-center gap-1 mx-auto text-gray-500 font-bold hover:text-gray-700"
-            >
-              <ArrowLeft className="w-5 h-5" /> Pick a different one
-            </button>
-            <p className="text-2xl md:text-3xl text-center font-bold text-gray-800 flex items-center justify-center gap-2">
-              Color your {sketch.name}! <Sparkles className="w-7 h-7 text-yellow-500" />
-            </p>
-            <ColoringCanvas imageUrl={sketch.imageUrl} title={sketch.name} />
-            <div className="flex justify-center pt-2">
-              <Button
-                onClick={startOver}
-                variant="outline"
-                className="rounded-2xl border-2 font-bold text-lg px-8 py-5"
-              >
-                Draw Something New!
-              </Button>
-            </div>
+            <PaintStudio
+              sketch={sketch}
+              otherSketches={
+                categoryId ? getSketchesByCategory(categoryId).filter((s) => s.id !== sketch.id) : []
+              }
+              onSwitchSketch={(s) => setSketch(s)}
+              onBack={startOver}
+            />
           </motion.div>
         )}
       </AnimatePresence>
