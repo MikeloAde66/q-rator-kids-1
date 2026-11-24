@@ -166,7 +166,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4">
+    <div className="w-full max-w-[1600px] mx-auto px-6">
       {/* Top utility bar — mirrors Veridian Q's icon row + Reference dropdown + settings gear */}
       <div className="flex items-center justify-between bg-white rounded-2xl shadow-lg px-4 py-2.5 mb-4">
         <div className="flex items-center gap-2">
@@ -261,7 +261,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: 'auto', opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
-              className="lg:w-72 bg-white rounded-3xl shadow-xl p-4 overflow-hidden shrink-0"
+              className="lg:w-80 bg-white rounded-3xl shadow-xl p-5 overflow-hidden shrink-0"
             >
               <div className="w-64 lg:w-full">
                 <Section id="brushes" title="Brushes" icon={Paintbrush} openId={openSection} setOpenId={setOpenSection}>
@@ -387,11 +387,11 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
 
           {/* 8x10 page, fit to the screen: no manual size control, no fixed
               pixel number. The box sizes itself off the viewport (width up
-              to a sane cap, height up to 65% of the screen's height), and
-              the canvas inside is object-contain, so the whole picture
-              always fits with nothing cut off — consistently, on any
-              device, without a slider. */}
-          <div className="mx-auto w-full max-w-[900px] aspect-[4/5]" style={{ maxHeight: '65vh' }}>
+              to a large, comfortable cap, height up to 80% of the screen's
+              height), and the canvas inside is object-contain, so the whole
+              picture always fits with nothing cut off — consistently, on
+              any device, without a slider. */}
+          <div className="mx-auto w-full max-w-[1200px] aspect-[4/5]" style={{ maxHeight: '80vh' }}>
             <PaintEngine
               ref={engineRef}
               imageUrl={sketch.imageUrl}
@@ -420,7 +420,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
 
       {/* Bottom action bar */}
       <div className="fixed bottom-0 left-0 right-0 lg:static bg-white lg:bg-transparent border-t lg:border-0 border-gray-100 p-3 lg:p-0 lg:mt-4">
-        <div className="flex flex-wrap items-center justify-center gap-3 max-w-7xl mx-auto">
+        <div className="flex flex-wrap items-center justify-center gap-3 max-w-[1600px] mx-auto">
           <button
             onClick={() => engineRef.current?.resetAll()}
             className="flex items-center gap-2 bg-red-100 text-red-600 font-bold px-5 py-3 rounded-2xl"
