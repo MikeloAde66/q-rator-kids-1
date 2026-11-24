@@ -426,9 +426,12 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
           </div>
 
           {/* 8x10 page: the canvas sits in a fixed 4:5 portrait box, like a
-              real printed coloring page. The kid can resize how big that
-              page draws with the zoom control above. */}
-          <div className="mx-auto aspect-[4/5]" style={{ width: '100%', maxWidth: canvasSize }}>
+              real printed coloring page. A literal 1in margin wraps the
+              artwork on every side — like the white border around a real
+              coloring book page — before the panel edge. The kid can resize
+              how big that page draws with the zoom control above. */}
+          <div className="mx-auto p-[1in] bg-white" style={{ width: '100%', maxWidth: canvasSize + 192 }}>
+          <div className="aspect-[4/5]">
             <PaintEngine
               ref={engineRef}
               imageUrl={sketch.imageUrl}
@@ -449,6 +452,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
                 setCanRedo(r);
               }}
             />
+          </div>
           </div>
         </div>
       </div>
