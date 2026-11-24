@@ -338,4 +338,13 @@
   html.qrk-dark-preview .qrk-dark-pop {
     filter: invert(1) hue-rotate(180deg);
   }
+
+  /* Quick test: the page's pastel gradient inverts to a dark brown/olive,
+     not true black, because it isn't pure white underneath. Swapping it to
+     white here means invert(1) turns it into true black (hue-rotate does
+     nothing to black/white, so it stays black). Temporary — swap back once
+     we've seen it. */
+  html.qrk-dark-preview .qrk-page-bg {
+    background: #fff !important;
+  }
 }

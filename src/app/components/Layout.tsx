@@ -73,7 +73,7 @@ export function Layout() {
       {/* Demo Data Generator - creates sample activity for testing */}
       <DemoDataGenerator />
       
-      <div className="min-h-screen bg-[linear-gradient(135deg,#fbeca2_0%,#f9e4bb_33%,#f6dad1_66%,#f5d1e6_100%)]">
+      <div className="qrk-page-bg min-h-screen bg-[linear-gradient(135deg,#fbeca2_0%,#f9e4bb_33%,#f6dad1_66%,#f5d1e6_100%)]">
         {/* Header */}
         <header className="bg-white shadow-md sticky top-0 z-50" role="banner">
           <div className="max-w-7xl mx-auto px-4 py-4">
