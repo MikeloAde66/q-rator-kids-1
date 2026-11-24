@@ -143,7 +143,6 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
   const [canRedo, setCanRedo] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>('brushes');
   const [stencilMenuOpen, setStencilMenuOpen] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   const flashToast = (msg: string) => {
@@ -161,7 +160,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
   };
 
   return (
-    <div className="w-full max-w-[1800px] mx-auto px-4">
+    <div className="w-full max-w-5xl mx-auto px-4">
       {/* Top utility bar — mirrors Veridian Q's icon row + Reference dropdown + settings gear */}
       <div className="flex items-center justify-between bg-white rounded-2xl shadow-lg px-4 py-2.5 mb-4">
         <div className="flex items-center gap-2">
@@ -380,7 +379,9 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
             </button>
           </div>
 
-          <div className="w-full">
+          {/* 8x10 page: the canvas sits in a fixed 4:5 portrait box, like a
+              real printed coloring page, instead of stretching edge to edge. */}
+          <div className="w-full max-w-[640px] mx-auto aspect-[4/5]">
             <PaintEngine
               ref={engineRef}
               imageUrl={sketch.imageUrl}
@@ -400,19 +401,9 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
                 setCanUndo(u);
                 setCanRedo(r);
               }}
-              onPreviewFrame={setPreviewUrl}
             />
           </div>
         </div>
-      </div>
-
-      {/* Floating reference monitor — anchored to the viewport, outside the
-          canvas panel entirely, in the same corner Veridian Q uses. */}
-      <div className="hidden sm:block fixed top-24 right-4 z-40 w-28 bg-white rounded-2xl shadow-2xl border-4 border-purple-200 p-1.5 rotate-2">
-        <div className="rounded-lg overflow-hidden bg-gray-50 aspect-square">
-          {previewUrl && <img src={previewUrl} alt="Live preview" className="w-full h-full object-cover" />}
-        </div>
-        <p className="text-center text-[9px] font-black text-purple-500 uppercase mt-1">Live View</p>
       </div>
 
       <Toast message={toast} />

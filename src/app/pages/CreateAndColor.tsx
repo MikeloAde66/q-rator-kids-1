@@ -12,10 +12,7 @@ export function CreateAndColor() {
   const [sketch, setSketch] = useState<ColoringSketch>(DEFAULT_SKETCH);
 
   return (
-    // Full-bleed: break out of the app shell's max-w-7xl page container so
-    // the canvas gets real room on wide screens instead of being capped at
-    // the same width as a text page.
-    <div className="min-h-screen pb-6 w-screen relative left-1/2 -ml-[50vw]">
+    <div className="min-h-screen pb-6">
       <VeridianKidsStudio
         sketch={sketch}
         otherSketches={getAllSketches().filter((s) => s.id !== sketch.id)}

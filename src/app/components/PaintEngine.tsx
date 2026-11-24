@@ -551,16 +551,16 @@ export const PaintEngine = forwardRef<PaintEngineHandle, PaintEngineProps>(funct
   }));
 
   return (
-    <div className="relative bg-white rounded-3xl shadow-inner overflow-hidden w-full">
+    <div className="relative bg-white rounded-3xl shadow-inner overflow-hidden w-full h-full">
       {loading && (
-        <div className="aspect-square flex items-center justify-center">
+        <div className="w-full h-full flex items-center justify-center">
           <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
             <Paintbrush className="w-12 h-12 text-purple-400" />
           </motion.div>
         </div>
       )}
       {loadError && !loading && (
-        <div className="aspect-square flex flex-col items-center justify-center gap-3 p-8 text-center">
+        <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-8 text-center">
           <p className="text-xl font-bold text-gray-700">Oops! This picture doesn't want to be colored right now.</p>
           <p className="text-gray-500">Let's pick a different one!</p>
         </div>
@@ -571,7 +571,7 @@ export const PaintEngine = forwardRef<PaintEngineHandle, PaintEngineProps>(funct
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
-        className={`w-full h-auto touch-none ${loading || loadError ? 'hidden' : 'cursor-crosshair'}`}
+        className={`w-full h-full object-contain touch-none ${loading || loadError ? 'hidden' : 'cursor-crosshair'}`}
       />
       {showRulers && !loading && !loadError && (
         <div
