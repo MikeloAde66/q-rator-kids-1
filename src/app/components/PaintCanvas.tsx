@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Paintbrush } from 'lucide-react';
 
 export type PaintTool = 'fill' | 'draw' | 'draw-crayon' | 'draw-pencil' | 'erase';
+export type FillPattern = 'solid' | 'dots' | 'stripes' | 'checker';
 
 export interface PaintCanvasHandle {
   undo: () => void;
@@ -16,6 +17,7 @@ interface PaintCanvasProps {
   tool: PaintTool;
   color: string;
   brushSize: number;
+  fillPattern?: FillPattern;
   onHistoryChange?: (canUndo: boolean, canRedo: boolean) => void;
   onLoadStateChange?: (loading: boolean, error: boolean) => void;
 }
@@ -27,12 +29,34 @@ function hexToRgb(hex: string): [number, number, number] {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
+// Returns true if (x, y) should receive fill color under the given pattern.
+// 'solid' always fills; the others leave gaps so the bounded region reads
+// as a dotted / striped / checkered texture instead of a flat color.
+function patternMatch(x: number, y: number, pattern: FillPattern): boolean {
+  switch (pattern) {
+    case 'dots': {
+      const cx = x % 14;
+      const cy = y % 14;
+      const dx = cx - 6;
+      const dy = cy - 6;
+      return dx * dx + dy * dy < 16;
+    }
+    case 'stripes':
+      return (x + y) % 16 < 8;
+    case 'checker':
+      return (Math.floor(x / 9) + Math.floor(y / 9)) % 2 === 0;
+    default:
+      return true;
+  }
+}
+
 // Classic paint-bucket flood fill, bounded by the sketch's dark outlines.
 function floodFill(
   imageData: ImageData,
   startX: number,
   startY: number,
   fillColor: [number, number, number],
+  pattern: FillPattern = 'solid',
   tolerance = 40
 ) {
   const { data, width, height } = imageData;
@@ -72,10 +96,12 @@ function floodFill(
     if (!matches(idx)) continue;
 
     visited[pos] = 1;
-    data[idx] = fr;
-    data[idx + 1] = fg;
-    data[idx + 2] = fb;
-    data[idx + 3] = 255;
+    if (patternMatch(x, y, pattern)) {
+      data[idx] = fr;
+      data[idx + 1] = fg;
+      data[idx + 2] = fb;
+      data[idx + 3] = 255;
+    }
 
     stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
   }
@@ -84,7 +110,7 @@ function floodFill(
 }
 
 export const PaintCanvas = forwardRef<PaintCanvasHandle, PaintCanvasProps>(function PaintCanvas(
-  { imageUrl, tool, color, brushSize, onHistoryChange, onLoadStateChange },
+  { imageUrl, tool, color, brushSize, fillPattern = 'solid', onHistoryChange, onLoadStateChange },
   ref
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -245,7 +271,7 @@ export const PaintCanvas = forwardRef<PaintCanvasHandle, PaintCanvasProps>(funct
 
     if (tool === 'fill') {
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const filled = floodFill(imageData, x, y, hexToRgb(color));
+      const filled = floodFill(imageData, x, y, hexToRgb(color), fillPattern);
       if (filled) {
         ctx.putImageData(imageData, 0, 0);
         pushHistory();

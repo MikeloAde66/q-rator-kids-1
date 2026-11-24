@@ -17,7 +17,7 @@ import {
   Send,
   ArrowLeft,
 } from 'lucide-react';
-import { PaintCanvas, type PaintCanvasHandle, type PaintTool } from './PaintCanvas';
+import { PaintCanvas, type PaintCanvasHandle, type PaintTool, type FillPattern } from './PaintCanvas';
 import type { ColoringSketch } from '../data/coloringSketches';
 
 interface PaintStudioProps {
@@ -45,7 +45,7 @@ const TOOLS: ToolDef[] = [
   { id: 'fill', label: 'Paint Bucket', icon: PaintBucket, bg: 'bg-green-100 text-green-600', live: true },
   { id: 'erase', label: 'Eraser', icon: Eraser, bg: 'bg-blue-100 text-blue-600', live: true },
   { id: 'blend', label: 'Blend', icon: Droplets, bg: 'bg-slate-100 text-slate-600', live: false },
-  { id: 'textures', label: 'Textures & Patterns', icon: Grid3x3, bg: 'bg-fuchsia-100 text-fuchsia-600', live: false },
+  { id: 'textures', label: 'Textures & Patterns', icon: Grid3x3, bg: 'bg-fuchsia-100 text-fuchsia-600', live: true },
   { id: 'stickers', label: 'Sticker Box', icon: Sticker, bg: 'bg-pink-100 text-pink-600', live: false },
   { id: 'magic', label: 'Magic FX', icon: Wand2, bg: 'bg-violet-100 text-violet-600', live: false },
 ];
@@ -90,22 +90,42 @@ export function PaintStudio({ sketch, otherSketches, onSwitchSketch, onBack }: P
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [paletteTab, setPaletteTab] = useState<'basic' | 'advanced'>('basic');
+  const [fillPattern, setFillPattern] = useState<FillPattern>('solid');
   const [toast, setToast] = useState<string | null>(null);
 
-  const showComingSoon = (label: string) => {
-    setToast(`${label} is coming soon! ✨`);
+  const flashToast = (message: string) => {
+    setToast(message);
     window.setTimeout(() => setToast(null), 1800);
   };
+
+  const showComingSoon = (label: string) => flashToast(`${label} is coming soon! ✨`);
+
+  const FILL_PATTERNS: { id: FillPattern; label: string }[] = [
+    { id: 'dots', label: 'Dots' },
+    { id: 'stripes', label: 'Stripes' },
+    { id: 'checker', label: 'Checkers' },
+  ];
 
   const handleToolClick = (toolDef: ToolDef) => {
     if (!toolDef.live) {
       showComingSoon(toolDef.label);
       return;
     }
+    if (toolDef.id === 'textures') {
+      const currentIndex = FILL_PATTERNS.findIndex((p) => p.id === fillPattern);
+      const next = FILL_PATTERNS[(currentIndex + 1) % FILL_PATTERNS.length];
+      setFillPattern(next.id);
+      setTool('fill');
+      flashToast(`${next.label} pattern — tap inside the lines! 🎨`);
+      return;
+    }
+    if (toolDef.id === 'fill') {
+      setFillPattern('solid');
+    }
     setTool(toolDef.id as PaintTool);
   };
 
-  const activeToolId = tool === 'draw' ? 'draw' : tool;
+  const activeToolId = tool === 'fill' && fillPattern !== 'solid' ? 'textures' : tool;
 
   return (
     <div className="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto">
@@ -163,6 +183,7 @@ export function PaintStudio({ sketch, otherSketches, onSwitchSketch, onBack }: P
             tool={tool}
             color={color}
             brushSize={brushSize}
+            fillPattern={fillPattern}
             onHistoryChange={(u, r) => {
               setCanUndo(u);
               setCanRedo(r);
