@@ -19,8 +19,6 @@ import {
   Send,
   ArrowLeft,
   Settings,
-  ZoomIn,
-  ZoomOut,
 } from 'lucide-react';
 import { PaintEngine, type PaintEngineHandle, type PaintTool, type FillPattern, type PaintLayer } from './PaintEngine';
 import type { ColoringSketch } from '../data/coloringSketches';
@@ -146,15 +144,6 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
 
   const [layers, setLayers] = useState<PaintLayer[]>([]);
   const [activeLayerId, setActiveLayerId] = useState<string | null>(null);
-
-  // How big the canvas page draws, in pixels of width (the 4:5 page shape
-  // stays fixed — this just scales the whole page up or down so kids with
-  // more screen room can make it bigger).
-  const [canvasSize, setCanvasSize] = useState(640);
-  // This app is for young kids, so the page can never shrink below a size
-  // they can still tap and color accurately — 300px is the floor.
-  const MIN_CANVAS_SIZE = 300;
-  const MAX_CANVAS_SIZE = 1100;
 
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -394,43 +383,15 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
             >
               <Redo2 className="w-4 h-4" />
             </button>
-
-            {/* Page size: scales the 8x10 canvas bigger or smaller for
-                whatever room the kid's screen has. */}
-            <div className="flex items-center gap-2 bg-purple-50 rounded-full pl-3 pr-2 py-1 ml-2">
-              <button
-                onClick={() => setCanvasSize((s) => Math.max(MIN_CANVAS_SIZE, s - 80))}
-                disabled={canvasSize <= MIN_CANVAS_SIZE}
-                className="flex items-center justify-center w-7 h-7 rounded-full text-purple-500 disabled:opacity-30"
-                aria-label="Make page smaller"
-              >
-                <ZoomOut className="w-4 h-4" />
-              </button>
-              <input
-                type="range"
-                min={MIN_CANVAS_SIZE}
-                max={MAX_CANVAS_SIZE}
-                step={20}
-                value={canvasSize}
-                onChange={(e) => setCanvasSize(Number(e.target.value))}
-                className="w-24 accent-purple-500"
-                aria-label="Page size"
-              />
-              <button
-                onClick={() => setCanvasSize((s) => Math.min(MAX_CANVAS_SIZE, s + 80))}
-                disabled={canvasSize >= MAX_CANVAS_SIZE}
-                className="flex items-center justify-center w-7 h-7 rounded-full text-purple-500 disabled:opacity-30"
-                aria-label="Make page bigger"
-              >
-                <ZoomIn className="w-4 h-4" />
-              </button>
-            </div>
           </div>
 
-          {/* 8x10 page: the canvas sits in a fixed 4:5 portrait box, like a
-              real printed coloring page. The kid can resize how big that
-              page draws with the zoom control above. */}
-          <div className="mx-auto aspect-[4/5]" style={{ width: '100%', maxWidth: canvasSize }}>
+          {/* 8x10 page, fit to the screen: no manual size control, no fixed
+              pixel number. The box sizes itself off the viewport (width up
+              to a sane cap, height up to 65% of the screen's height), and
+              the canvas inside is object-contain, so the whole picture
+              always fits with nothing cut off — consistently, on any
+              device, without a slider. */}
+          <div className="mx-auto w-full max-w-[900px] aspect-[4/5]" style={{ maxHeight: '65vh' }}>
             <PaintEngine
               ref={engineRef}
               imageUrl={sketch.imageUrl}
