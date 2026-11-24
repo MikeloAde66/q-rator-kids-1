@@ -151,7 +151,7 @@ export function VeridianKidsStudio({ sketch, otherSketches, onSwitchSketch }: Ve
   // stays fixed — this just scales the whole page up or down so kids with
   // more screen room can make it bigger).
   const [canvasSize, setCanvasSize] = useState(640);
-  const MIN_CANVAS_SIZE = 400;
+  const MIN_CANVAS_SIZE = 100;
   const MAX_CANVAS_SIZE = 1100;
 
   const [canUndo, setCanUndo] = useState(false);
