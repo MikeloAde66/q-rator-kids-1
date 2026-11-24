@@ -48,19 +48,6 @@ export function Entertainment() {
             </h1>
             <Sparkles className="w-12 h-12 md:w-16 md:h-16 text-pink-500" />
           </div>
-          {childProfile && (
-            <motion.p 
-              className="text-2xl md:text-3xl text-gray-700 font-bold"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              Hey {childProfile.name}! Ready to watch some awesome videos? 🌟
-            </motion.p>
-          )}
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-            Sing, dance, and have fun with your animal friends!
-          </p>
         </motion.div>
 
         {/* Controls */}
